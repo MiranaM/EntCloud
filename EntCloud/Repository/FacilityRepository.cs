@@ -16,11 +16,11 @@ namespace EntCloud.Repository
         public FacilityRepository (FacilityContext fc)
         {
             _dbContext = fc;
-            _transactionDealerRepository = new TransactionDealerRepository(fc);
+            _transactionDealerRepository = new TransactionDealerRepository(_dbContext);
 
-    }
+        }
 
-    public void DeleteFacility(int FacilityId)
+        public void DeleteFacility(int FacilityId)
         {
             var facility = _dbContext.Facilities.Find(FacilityId);
             _dbContext.Facilities.Remove(facility);
@@ -70,6 +70,33 @@ namespace EntCloud.Repository
         {
             _dbContext.Entry(Facility).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             Save();
+        }
+    }
+
+    public sealed class TransactionDealerRepository : FacilityRepository, ITransactionDealerRepository
+    {
+        public TransactionDealerRepository(FacilityContext dbContext)
+           : base(dbContext)
+        { }
+
+        public void BeginTransaction()
+        {
+            _dbContext.Database.BeginTransaction();
+        }
+
+        public void CommitTransaction()
+        {
+            _dbContext.Database.CommitTransaction();
+        }
+
+        public void RollbackTransaction()
+        {
+            _dbContext.Database.RollbackTransaction();
+        }
+
+        public void DisposeTransaction()
+        {
+            _dbContext.Database.CurrentTransaction.Dispose();
         }
     }
 }
