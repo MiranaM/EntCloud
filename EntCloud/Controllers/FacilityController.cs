@@ -42,8 +42,9 @@ namespace EntCloud.Controllers
         public IActionResult Post([FromBody] Facility facility)
         {
             using (var scope = new TransactionScope())
-            {
+            {                
                 _facilityRepository.InsertFacility(facility);
+                
                 scope.Complete();
                 return CreatedAtAction(nameof(Get), new { id = facility.Id }, facility);
             }

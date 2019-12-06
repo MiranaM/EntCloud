@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Steeltoe.Discovery.Client;
 
 namespace EntCloud
 {
@@ -28,6 +29,7 @@ namespace EntCloud
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDiscoveryClient(Configuration);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<FacilityContext>(o => o.UseMySql("server=localhost;"+"port=3306;"+"userid=root;"+"password=admin;"+"database=ent_facilities"));
             services.AddTransient<IFacilityRepository,FacilityRepository>();
@@ -48,6 +50,7 @@ namespace EntCloud
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseDiscoveryClient();
         }
     }
 }

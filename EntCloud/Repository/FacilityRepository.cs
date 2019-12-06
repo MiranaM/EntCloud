@@ -4,19 +4,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using EntCloud.DBContext;
 using EntCloud.Models;
+using EntCloud.Transactions;
 
 namespace EntCloud.Repository
 {
     public class FacilityRepository : IFacilityRepository
     {
-        private readonly FacilityContext _dbContext;
+        protected readonly FacilityContext _dbContext;
+        protected TransactionDealerRepository _transactionDealerRepository;
 
         public FacilityRepository (FacilityContext fc)
         {
             _dbContext = fc;
-        }
+            _transactionDealerRepository = new TransactionDealerRepository(fc);
 
-        public void DeleteFacility(int FacilityId)
+    }
+
+    public void DeleteFacility(int FacilityId)
         {
             var facility = _dbContext.Facilities.Find(FacilityId);
             _dbContext.Facilities.Remove(facility);
@@ -46,7 +50,20 @@ namespace EntCloud.Repository
 
         public void Save()
         {
-            _dbContext.SaveChanges(); 
+            _transactionDealerRepository.BeginTransaction();
+            try
+            {
+                _dbContext.SaveChanges(true);
+            }
+            catch (Exception)
+            {
+                _transactionDealerRepository.RollbackTransaction();
+                throw;
+            }
+            finally
+            {
+                _transactionDealerRepository.DisposeTransaction();
+            }
         }
 
         public void UpdateFacility(Facility Facility)
