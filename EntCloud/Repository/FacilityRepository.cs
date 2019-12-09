@@ -5,19 +5,17 @@ using System.Threading.Tasks;
 using EntCloud.DBContext;
 using EntCloud.Models;
 using EntCloud.Transactions;
+using Microsoft.EntityFrameworkCore;
 
 namespace EntCloud.Repository
 {
     public class FacilityRepository : IFacilityRepository
     {
         protected readonly FacilityContext _dbContext;
-        protected TransactionDealerRepository _transactionDealerRepository;
 
         public FacilityRepository (FacilityContext fc)
         {
             _dbContext = fc;
-            _transactionDealerRepository = new TransactionDealerRepository(_dbContext);
-
         }
 
         public void DeleteFacility(int FacilityId)
@@ -45,58 +43,18 @@ namespace EntCloud.Repository
         public void InsertFacility(Facility Facility)
         {
             _dbContext.Add(Facility);
-            Save();
+            _dbContext.SaveChanges();
         }
 
         public void Save()
-        {
-            _transactionDealerRepository.BeginTransaction();
-            try
-            {
-                _dbContext.SaveChanges(true);
-            }
-            catch (Exception)
-            {
-                _transactionDealerRepository.RollbackTransaction();
-                throw;
-            }
-            finally
-            {
-                _transactionDealerRepository.DisposeTransaction();
-            }
+        {            
+            _dbContext.SaveChanges(true);
         }
 
         public void UpdateFacility(Facility Facility)
         {
             _dbContext.Entry(Facility).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            Save();
-        }
-    }
-
-    public sealed class TransactionDealerRepository : FacilityRepository, ITransactionDealerRepository
-    {
-        public TransactionDealerRepository(FacilityContext dbContext)
-           : base(dbContext)
-        { }
-
-        public void BeginTransaction()
-        {
-            _dbContext.Database.BeginTransaction();
-        }
-
-        public void CommitTransaction()
-        {
-            _dbContext.Database.CommitTransaction();
-        }
-
-        public void RollbackTransaction()
-        {
-            _dbContext.Database.RollbackTransaction();
-        }
-
-        public void DisposeTransaction()
-        {
-            _dbContext.Database.CurrentTransaction.Dispose();
+            _dbContext.SaveChanges(true);
         }
     }
 }

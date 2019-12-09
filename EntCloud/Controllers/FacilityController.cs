@@ -40,28 +40,21 @@ namespace EntCloud.Controllers
         // POST: api/Facility
         [HttpPost]
         public IActionResult Post([FromBody] Facility facility)
-        {
-            using (var scope = new TransactionScope())
-            {                
-                _facilityRepository.InsertFacility(facility);
+        {              
+            _facilityRepository.InsertFacility(facility);
                 
-                scope.Complete();
-                return CreatedAtAction(nameof(Get), new { id = facility.Id }, facility);
-            }
+            return CreatedAtAction(nameof(Get), new { id = facility.Id }, facility);
+            
         }
 
         // PUT: api/Facility/5
-        //[HttpPut("{id}")]
+        [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Facility facility)
         {
             if(facility != null)
             {
-                using (var scope = new TransactionScope())
-                {
-                    _facilityRepository.UpdateFacility(facility);
-                    scope.Complete();
-                    return new OkResult();
-                }
+                _facilityRepository.UpdateFacility(facility);
+                return new OkResult();                
             }
             return new NoContentResult();
         }
