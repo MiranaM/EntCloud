@@ -1,20 +1,20 @@
-###.Net Core Microservice for CloudEntertainment
+.Net Core Microservice for CloudEntertainment
 
 ------------
 
-#### Tools:
+ Tools:
 - Visual Studio Community 2017 15.9.17
 - MySQL
 
 ------------
 
-####Done:
+ Done:
 - Database (+migration)
 - Added Eureka
 - REST tests with Postman
 ------------
 
-####How to install
+ How to install
 - Open project
 - Open Package Manager Console
 - Run 
