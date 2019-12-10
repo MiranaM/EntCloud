@@ -10,9 +10,13 @@
 
 ####Done:
 - Database (+migration)
-
+- Added Eureka
+- REST tests with Postman
 ------------
 
-####To do list:
-- Add Eureka
-- REST tests with Postman
+####How to install
+- Open project
+- Open Package Manager Console
+- Run 
+`dotnet ef migrations add InitialCreate`
+- Once migration is complete, simply run "IIS Express"
