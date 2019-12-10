@@ -42,7 +42,7 @@ namespace EntCloud.Repository
         public void InsertFacility(Facility Facility)
         {
             _dbContext.Add(Facility);
-            _dbContext.SaveChanges();
+            Save();
         }
 
         public void Save()
@@ -53,7 +53,7 @@ namespace EntCloud.Repository
         public void UpdateFacility(Facility Facility)
         {
             _dbContext.Entry(Facility).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            _dbContext.SaveChanges(true);
+            Save();
         }
     }
 }

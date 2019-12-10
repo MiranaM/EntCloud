@@ -12,14 +12,7 @@ namespace EntCloud.DBContext
 {
     public class FacilityContext : DbContext
     {   
-        public FacilityContext (DbContextOptions<FacilityContext> options) : base(options)
-        {
-        }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("server=localhost;" + "port=3306;" + "userid=root;" + "password=admin;" + "database=ent_facilities");
-        //}
+        public FacilityContext (DbContextOptions<FacilityContext> options) : base(options) {}
 
         public DbSet<Facility> Facilities { get; set; }
         public DbSet<Address> Addresses { get; set; }
@@ -29,14 +22,16 @@ namespace EntCloud.DBContext
 
         protected override void OnModelCreating (ModelBuilder modelBuilder)
         {
+            //чтобы был инкремент Id
             foreach (var type in modelBuilder.Model.GetEntityTypes().Select(c => c.ClrType))
             {
                 modelBuilder.Entity(type, b =>
                 {
                     b.Property("Id").HasValueGenerator<IntValueGenerator>();
                 });
-            }           
+            }
 
+            #region ModelBuilder заполнение базы тестовыми данными
             modelBuilder.Entity<Street>().HasData(
                     new Street
                     {
@@ -74,22 +69,75 @@ namespace EntCloud.DBContext
                 );
 
             modelBuilder.Entity<Country>().HasData(
-                new Country
-                {
-                    Id = 1,
-                    Name = "Russia",
-                },
-                new Country
-                {
-                    Id = 2,
-                    Name = "Ukraine",
-                },
-                new Country
-                {
-                    Id = 3,
-                    Name = "Belarus",
-                }
-            );
+                    new Country
+                    {
+                        Id = 1,
+                        Name = "Russia",
+                    },
+                    new Country
+                    {
+                        Id = 2,
+                        Name = "Ukraine",
+                    },
+                    new Country
+                    {
+                        Id = 3,
+                        Name = "Belarus",
+                    }
+                );
+
+            modelBuilder.Entity<Address>().HasData(
+                    new Address
+                    {
+                        Id = 1,
+                        CountryId = 1,
+                        CityId = 1,
+                        StreetId = 1,
+                        BuildingNumber = 23
+                    },
+                    new Address
+                    {
+                        Id = 2,
+                        CountryId = 1,
+                        CityId = 2,
+                        StreetId = 1,
+                        BuildingNumber = 12
+
+                    },
+                    new Address
+                    {
+                        Id = 3,
+                        CountryId = 1,
+                        CityId = 3,
+                        StreetId = 2,
+                        BuildingNumber = 3
+                    }
+                );
+
+            modelBuilder.Entity<Facility>().HasData(
+                    new Facility
+                    {
+                        Id = 1,
+                        AddressId = 1,
+                        OwnerId = 1,
+                        Telephone = "123456789"
+                    },
+                    new Facility
+                    {
+                        Id = 2,
+                        AddressId = 2,
+                        OwnerId = 2,
+                        Telephone = "98765623"
+                    },
+                    new Facility
+                    {
+                        Id = 3,
+                        AddressId = 3,
+                        OwnerId = 3,
+                        Telephone = "2546875243"
+                    }
+                );
+            #endregion
 
             base.OnModelCreating(modelBuilder);
         }
